@@ -16,21 +16,37 @@ class ProductService {
       });
     }
   }
-  /* let create =()=>{
-
-  } */
-  find() {
+  async create(data) {
+    const newProduct = {
+      id: faker.datatype.uuid(),
+      ...data,
+    };
+    this.products.push(newProduct);
+    return newProduct;
+  }
+  async find() {
     return this.products;
   }
-  findOne(id) {
+  async findOne(id) {
     return this.products.find((item) => item.id === id);
   }
-  /* let update=()=>{
-
+  async update(id, changes) {
+    const index = this.products.findIndex((item) => item.id === id);
+    if (index < 0) throw Error('product not Found');
+    if (changes.id) throw new Error('You cannot update the id');
+    const product = this.products[index];
+    this.products[index] = {
+      ...product,
+      ...changes,
+    };
+    return this.products[index];
   }
-let delete=()=>{
-
-} */
+  async delete(id) {
+    const index = this.products.findIndex((item) => item.id === id);
+    if (index < 0) throw Error('product not Found');
+    this.products.splice(index, 1);
+    return { message: 'delete', id };
+  }
 }
 
 module.exports = ProductService;
