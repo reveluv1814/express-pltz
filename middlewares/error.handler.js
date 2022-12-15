@@ -1,3 +1,5 @@
+//error middleware
+
 let logErrors = (e, req, res, next) => {
   console.error(e);
   next(e);
