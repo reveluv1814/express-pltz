@@ -1,5 +1,8 @@
 const express = require('express');
+//cors
+const cors = require('cors');
 const { routerApi } = require('./routes/index');
+const { PORT } = require('./config');
 
 //importamos el arachivo de middlewares
 const {
@@ -9,9 +12,23 @@ const {
 } = require('./middlewares/error.handler');
 
 const app = express();
-const port = 3000;
 
 app.use(express.json());
+
+//cors lista de lugares donde si quiero que hagan peticiones
+const whitelist = ['http//localhost:8080', 'https://myappp.bo'];
+const options = {
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('no permitido'));
+    }
+  },
+};
+
+app.use(cors(options));
+//fin middlewares
 
 app.get('/', (req, res) => {
   res.send('Holis express');
@@ -27,6 +44,6 @@ app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log('Mi port' + port);
+app.listen(PORT, () => {
+  console.log('Mi port' + PORT);
 });
